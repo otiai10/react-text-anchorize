@@ -1,0 +1,27 @@
+{
+  "name": "react-text-anchorize",
+  "version": "0.0.1",
+  "description": "React Anchorize Text",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "coffee-script": "*",
+    "mocha": "*",
+    "chai": "*"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --compilers coffee:coffee-script/register"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/otiai10/react-text-anchorize.git"
+  },
+  "author": "otiai10",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/otiai10/react-text-anchorize/issues"
+  },
+  "homepage": "https://github.com/otiai10/react-text-anchorize"
+}

@@ -1,4 +1,3 @@
-
 var AnchorizableText = React.createClass({
     // render it first
     render: function () {
