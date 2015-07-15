@@ -1,47 +1,41 @@
 var AnchorizableText = React.createClass({
-    // render it first
-    render: function () {
-        return React.createElement('div', {
-            ref: 'ATSelf'
-        }, this.props.text);
+    getInitialState: function() {
+        var replacers = this.expandByRules([this.props.text]);
+        var contents = [];
+        replacers.forEach(function(replacer, i) {
+            if (typeof replacer === 'string')
+              return contents.push(<span>{replacer}</span>);
+            setTimeout(function() {
+              replacer.replace.bind(this)(i);
+            }.bind(this));
+            return contents.push(<span>{replacer}</span>);
+        }.bind(this));
+        return {contents: contents};
     },
-    // anchorize it after mount
-    componentDidMount: function() {
-        this.anchorize();
+    render: function() {
+        return <span>{this.state.contents}</span>;
     },
-    // anchorize it after update
-    componentDidUpdate: function() {
-        this.anchorize();
+    expandByRules: function(tokens) {
+        if (!AnchorizableText.Rules) return tokens;
+        AnchorizableText.Rules.forEach(function(rule, i) {
+            tokens = this.expandByRule(rule, tokens);
+        }.bind(this));
+        return tokens;
     },
-    // anchorize execution
-    anchorize: function() {
-        var myself = React.findDOMNode(this.refs.ATSelf);
-        var value = this.props.text;
-        var self = this;
-        this.props.ExprWrappers.map(function(ew) {
-           value = self.exprAndWrap(value, ew);
+    expandByRule: function(rule, tokens) /* tokens */ {
+      return (function(tokens) {
+        var expr = new RegExp(rule.match);
+        var res = [];
+        tokens.forEach(function(token) {
+          if (!token.split) return res.push(token); // this is already replacer.
+          token.split(expr).forEach(function(e) {
+            if (e.length === 0) return;
+            if (e.match(expr)) return res.push(new rule.replacer(e));
+            return res.push(e);
+          });
         });
-        myself.innerHTML = value;
-    },
-    // expr and wrap
-    exprAndWrap: function(value, ew /* interface ExprWrapper */) {
-        if (typeof ew.expr != 'function' || typeof ew.wrap != 'function') return value;
-        (ew.expr().exec(value) || []).map(function(found) {
-            value = value.split(found).join(ew.wrap(found));
-        });
-        return value;
-    },
-    getDefaultProps: function() {
-        var sampleExprWrapper = {
-            expr: function () /* RegExp */ {
-                return /おっぱい/gi;
-            },
-            wrap: function (value) /* string */ {
-                return '<span style="background-color:yellow">' + value + '</span>';
-            }
-        };
-        return {
-            ExprWrappers: [sampleExprWrapper]
-        };
+        return res;
+      })(tokens);
     }
 });
+AnchorizableText.Rules = [];
