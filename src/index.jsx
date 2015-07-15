@@ -36,6 +36,10 @@ var AnchorizableText = React.createClass({
         });
         return res;
       })(tokens);
+    },
+    replaceContentsOf: function(index, content) {
+        this.state.contents[index] = content;
+        this.setState({contents: this.state.contents});
     }
 });
 AnchorizableText.Rules = [];
