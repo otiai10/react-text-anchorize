@@ -16,14 +16,15 @@ var myRules = [
     // "replace" is called after text is rendered.
     // You can replace matched part of the text asynchronously,
     // by using "replaceContentsOf"
-    replace: function(i, sub) /* void */ {
+    replace: function(sub, replaceBy) /* void */ {
       myTwitterAPIClient.getEmbedHTML(sub, function(html) {
-        this.replaceContentsOf(i, <div dangerouslySetInnerHTML={{__html:html}}></div>);
-      }.bind(this));
+        replaceBy(<div dangerouslySetInnerHTML={{__html:html}}></div>);
+      });
     }
   }
 ];
 
+import AnchorizableText from 'react-text-anchorize';
 return <AnchorizableText rules={myRules} text={"I love this tweet https://twitter.com/yuka_iguti/status/559023220100055042"} />;
 ```
 

@@ -4,17 +4,24 @@ import PropTypes from 'prop-types';
 class AnchorizableText extends Component {
   constructor(props) {
     super(props);
-    const contents = this._expandByRules([this.props.text]).map((replacer, i) => {
-      if (typeof replacer === 'string') return <span key={i}>{replacer}</span>;
-      if (typeof replacer.replace == 'function') {
-        setTimeout(() => replacer.replace.bind(this)(i, replacer.value));
+    this.reservations = [];
+    const contents = this._expandByRules([this.props.text]).map((token, i) => {
+      if (typeof token != 'string' && typeof token.replace == 'function') {
+        this.reservations.push(token.replace.bind(null, token.value, (result) => {
+          this.replaceContentsOf(i, result);
+        }, i));
       }
-      const tmp = replacer.wrap.bind(this)(replacer.value);
-      return <span key={i}>{tmp}</span>;
-    });
+      if (typeof token.wrap == 'function') {
+        return <span key={i}>{token.wrap.bind(this)(token.value)}</span>;
+      }
+      return <span key={i}>{token}</span>;
+    })
     this.state = {
-      contents: contents,
+      contents,
     };
+  }
+  componentDidMount() {
+    this.reservations.map(replace => replace());
   }
   render() {
     return <span>{this.state.contents}</span>;
@@ -45,7 +52,7 @@ class AnchorizableText extends Component {
     })(tokens);
   }
   replaceContentsOf(index, content) {
-      this.state.contents[index] = content;
+      this.state.contents[index] = React.cloneElement(content, {key: index});
       this.setState({contents: this.state.contents});
   }
 }
