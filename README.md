@@ -1,3 +1,5 @@
+_ES6 Environment Required!!_
+
 # react-text-anchorize
 
 ```javascript
