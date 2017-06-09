@@ -44,7 +44,7 @@ class AnchorizableText extends Component {
       return res;
     })(tokens);
   }
-  replaceContentsOf: function(index, content) {
+  replaceContentsOf(index, content) {
       this.state.contents[index] = content;
       this.setState({contents: this.state.contents});
   }
